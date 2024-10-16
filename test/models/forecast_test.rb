@@ -5,7 +5,7 @@
 #  id           :bigint           not null, primary key
 #  address      :string
 #  address_hash :string
-#  data         :string
+#  data         :jsonb
 #  expires_at   :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

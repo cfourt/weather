@@ -5,7 +5,7 @@
 #  id           :bigint           not null, primary key
 #  address      :string
 #  address_hash :string
-#  data         :string
+#  data         :jsonb
 #  expires_at   :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -15,6 +15,7 @@
 #  index_forecasts_on_address_hash  (address_hash)
 #
 class Forecast < ApplicationRecord
+  require 'ostruct'
   EXPIRATION = 30.minutes
 
   validates :address_hash, presence: true, uniqueness: true
@@ -49,6 +50,11 @@ class Forecast < ApplicationRecord
     forecast = Forecast.find_by(address_hash: address_hash)
     return forecast unless forecast && forecast.expired?
     nil
+  end
+
+  # prefer . access instead of .dig or [][]
+  def data
+    OpenStruct.new(super)
   end
 
   private

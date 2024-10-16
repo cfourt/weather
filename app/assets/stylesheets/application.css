@@ -13,3 +13,15 @@
  *= require_tree .
  *= require_self
  */
+
+dd, dt {
+    display: inline-block;
+}
+
+
+ dt{
+     margin-right: .2em;
+ }
+dd {
+    margin-right: .8em;
+}

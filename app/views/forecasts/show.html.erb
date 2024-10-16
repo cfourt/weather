@@ -4,11 +4,11 @@
   </div>
 <% end %>
 <p style="color: green"><%= notice %></p>
-<%= debug @forecast if ENV["RAILS_ENV"] == 'development' %>
+<%#= debug @forecast if ENV["RAILS_ENV"] == 'development' %>
+
+<div class="mb-5">
+  <%= link_to "← Back to Home", root_path %>
+</div>
 
 <% content_for :title, @forecast.address %>
 <%= render @forecast %>
-
-<div>
-  <%= link_to "New Forecast", root_path %>
-</div>

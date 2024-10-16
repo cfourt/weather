@@ -3,7 +3,7 @@ class CreateForecasts < ActiveRecord::Migration[7.2]
     create_table :forecasts do |t|
       t.string :address
       t.string :address_hash
-      t.string :data
+      t.jsonb :data
       t.datetime :expires_at
 
       t.timestamps

@@ -1,22 +1,41 @@
 <div id="<%= dom_id forecast %>">
-  <p>
-    <strong>Address:</strong>
-    <%= forecast.address %>
-  </p>
+  <h1>
+    Weather for:
+    <br>
+    <u><%= forecast.address %></u>
+    <%= image_tag(
+          forecast.data.current.dig('condition', 'icon'),
+          alt: forecast.data.current.dig('condition', 'text')
+        ) %>
+  </h1>
+  <br>
+  <div class="border border-2 rounded p-4">
+    <dl>
+      <%= location_data_list(forecast.data.location) %>
+    </dl>
+  </div>
 
-  <p>
-    <strong>Address hash:</strong>
-    <%= forecast.address_hash %>
-  </p>
+  <div class="border border-2 rounded mt-5 p-4">
+    <h2 class="fs-4 mb-5">
+      Current Weather
 
-  <p>
-    <strong>Data:</strong>
-    <%= forecast.data %>
-  </p>
+      <span class="badge bg-secondary fs-6">
+        <% unless forecast.expired? %>
+          Cached – Next refresh in
+          <%= distance_of_time_in_words(forecast.expires_at, Time.current) %>
+        <% else %>
+        Expired
+      <% end %>
+      </span>
+    </h2>
 
-  <p>
-    <strong>Expires at:</strong>
-    <%= forecast.expires_at %>
-  </p>
+    <%= current_forecast_data_list(forecast.data.current) %>
+  </div>
 
 </div>
+
+<hr class="mt-5 mb-5">
+<details>
+  <summary>Raw Data</summary>
+  <%= data_list(forecast.data.current) %>
+</details>
