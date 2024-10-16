@@ -1,16 +1,33 @@
 <p style="color: green"><%= notice %></p>
+<p style="color: red"><%= flash[:error] %></p>
 
-<% content_for :title, "Forecasts" %>
-
-<h1>Forecasts</h1>
-
-<div id="forecasts">
-  <% @forecasts.each do |forecast| %>
-    <%= render forecast %>
-    <p>
-      <%= link_to "Show this forecast", forecast %>
-    </p>
-  <% end %>
+<div class="text-center mt-5">
+  <h1>Hail Yeah 🌨️</h1>
+  <div data-turbo="false">
+    <%= form_with url: forecasts_path do |f| %>
+      <%= f.label :address, "Enter an Address to see your forecast", class: 'fw-bold mt-5' %>
+      <br>
+      <%= f.text_field :address %>
+      <%#= f.submit "Get Forecast", class: 'btn btn-primary btn-sm' %>
+    <% end %>
+  </div>
 </div>
 
-<%= link_to "New forecast", new_forecast_path %>
+
+<% if @forecasts.any? %>
+  <h2 class="mt-5">Previous requests</h2>
+  <div id="forecasts">
+    <% @forecasts.each do |forecast| %>
+      <div class="card">
+        <div class="card-body">
+          <%= content_tag :h5, forecast.address %>
+          <div class="card-text">
+            <%= content_tag :code, forecast.address_hash %>
+            <%= content_tag :pre, forecast.data %>
+            <%= link_to "View", forecast, class: 'btn btn-primary btn-sm' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

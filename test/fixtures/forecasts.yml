@@ -16,13 +16,15 @@
 #
 
 one:
-  address: MyString
-  address_hash: MyString
+  address: 123 Main Street
+#  Don't set address_hash, it is generated on init
+#  address_hash: MyString
   data: MyString
   expires_at: 2024-10-15 11:32:37
 
 two:
-  address: MyString
-  address_hash: MyString
+  address: 345 Second Street
+#  Don't set address_hash, it is generated on init
+#  address_hash: MyString
   data: MyString
   expires_at: 2024-10-15 11:32:37

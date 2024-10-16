@@ -1,70 +1,44 @@
 class ForecastsController < ApplicationController
-  before_action :set_forecast, only: %i[ show edit update destroy ]
-
-  # GET /forecasts or /forecasts.json
-  def index
-    @forecasts = Forecast.all
-  end
+  before_action :set_forecast, only: %i[ show ]
 
   # GET /forecasts/1 or /forecasts/1.json
   def show
   end
 
-  # GET /forecasts/new
-  def new
-    @forecast = Forecast.new
+  def index
+    @forecasts = Forecast.all # TODO sort and limit
   end
 
-  # GET /forecasts/1/edit
-  def edit
-  end
-
-  # POST /forecasts or /forecasts.json
   def create
-    @forecast = Forecast.new(forecast_params)
+    @forecast = Forecast.find_fresh_by(address: params[:address])
 
-    respond_to do |format|
-      if @forecast.save
-        format.html { redirect_to @forecast, notice: "Forecast was successfully created." }
-        format.json { render :show, status: :created, location: @forecast }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @forecast.errors, status: :unprocessable_entity }
-      end
+    # render forecast if we have it saved already
+    if @forecast.present?
+      flash[:info] = "Retrieving a cached forecast"
+      redirect_to @forecast and return
     end
-  end
 
-  # PATCH/PUT /forecasts/1 or /forecasts/1.json
-  def update
-    respond_to do |format|
-      if @forecast.update(forecast_params)
-        format.html { redirect_to @forecast, notice: "Forecast was successfully updated." }
-        format.json { render :show, status: :ok, location: @forecast }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @forecast.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /forecasts/1 or /forecasts/1.json
-  def destroy
-    @forecast.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to forecasts_path, status: :see_other, notice: "Forecast was successfully destroyed." }
-      format.json { head :no_content }
+    # Otherwise, fetch a forecast, handle errors if there are any
+    begin
+      @forecast = Forecast.request_forecast!(params[:address])
+      @forecast.save!
+      flash[:info] = "Retrieving a cached forecast" if @forecast.cached?
+      redirect_to @forecast and return
+    rescue => e
+      flash[:error] = e.message
+      redirect_to forecasts_path
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_forecast
-      @forecast = Forecast.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def forecast_params
-      params.require(:forecast).permit(:address, :address_hash, :data, :expires_at)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_forecast
+    @forecast = Forecast.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def forecast_params
+    params.require(:forecast).permit(:address)
+  end
 end

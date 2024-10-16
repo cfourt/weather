@@ -10,14 +10,9 @@ class ForecastsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get new" do
-    get new_forecast_url
-    assert_response :success
-  end
-
   test "should create forecast" do
     assert_difference("Forecast.count") do
-      post forecasts_url, params: { forecast: { address: @forecast.address, address_hash: @forecast.address_hash, data: @forecast.data, expires_at: @forecast.expires_at } }
+      post forecasts_url, params: { address: @forecast.address }
     end
 
     assert_redirected_to forecast_url(Forecast.last)
@@ -26,23 +21,5 @@ class ForecastsControllerTest < ActionDispatch::IntegrationTest
   test "should show forecast" do
     get forecast_url(@forecast)
     assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_forecast_url(@forecast)
-    assert_response :success
-  end
-
-  test "should update forecast" do
-    patch forecast_url(@forecast), params: { forecast: { address: @forecast.address, address_hash: @forecast.address_hash, data: @forecast.data, expires_at: @forecast.expires_at } }
-    assert_redirected_to forecast_url(@forecast)
-  end
-
-  test "should destroy forecast" do
-    assert_difference("Forecast.count", -1) do
-      delete forecast_url(@forecast)
-    end
-
-    assert_redirected_to forecasts_url
   end
 end
