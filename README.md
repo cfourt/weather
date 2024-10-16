@@ -1,5 +1,5 @@
-# Hail Yeah!
-A tiny weather app designed to fetch and display weather via zip-code 
+# Weather App
+Weather ((aka. Hail Yeah!) is a tiny weather app designed to fetch and display weather via street address.
 Weather info is cached for a maximum of 30 minutes
 
 **A quick overview of the system**
