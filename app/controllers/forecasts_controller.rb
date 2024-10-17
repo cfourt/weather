@@ -1,21 +1,20 @@
 class ForecastsController < ApplicationController
-  # before_action :set_forecast, only: %i[ show ]
 
   # GET /forecasts/1 or /forecasts/1.json
   def show
     @forecast = Forecast.find(params[:id])
     return @forecast unless @forecast.expired?
 
-    Forecast.request_forecast!(@forecast.address).save
+    @forecast.request_forecast!
+    @forecast.reload
   end
 
   def index
-    # double check these are still valid!
-    @forecasts = Forecast.all.order(created_at: :desc).limit(25)
+    @forecasts = Forecast.all.not_expired.order(created_at: :desc).limit(25)
   end
 
   def create
-    @forecast = Forecast.find_fresh_by(address: params[:address])
+    @forecast = Forecast.find_by(address: params[:address])
 
     # render forecast if we have it saved already
     if @forecast.present?
@@ -23,24 +22,21 @@ class ForecastsController < ApplicationController
       redirect_to @forecast and return
     end
 
-    # Otherwise, fetch a forecast, handle errors if there are any
-    begin
-      @forecast = Forecast.request_forecast!(params[:address])
-      @forecast.save!
-      flash[:info] = "Retrieving a cached forecast" if @forecast.cached?
-      redirect_to @forecast and return
-    rescue => e
-      flash[:error] = e.message
-      redirect_to forecasts_path
+    @forecast = Forecast.new(address: params[:address])
+    @forecast.request_forecast!
+
+    respond_to do |format|
+      if @forecast.save
+        format.html { redirect_to @forecast }
+        format.json { render :show, status: :ok, location: @forecast }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @forecast.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   private
-
-  # Use callbacks to share common setup or constraints between actions.
-  def set_forecast
-    @forecast = Forecast.find(params[:id])
-  end
 
   # Only allow a list of trusted parameters through.
   def forecast_params

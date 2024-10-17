@@ -17,26 +17,27 @@
 class Forecast < ApplicationRecord
   EXPIRATION = 30.minutes
 
-  validates :address_hash, presence: true, uniqueness: true
   validates_with AddressValidator
+  validates :address_hash, presence: true, uniqueness: true
+  validates :data, presence: true, uniqueness: true
 
   after_initialize :add_address_hash
   after_initialize :add_expiry_date
 
-  attr_accessor :cached, :data
+  attr_accessor :cached
 
-  default_scope { where(updated_at > EXPIRATION.ago) }
+  scope :not_expired, -> { where('updated_at > ?', EXPIRATION.ago) }
 
   def initialize(attributes = {})
     super(attributes) # Pass attributes to ActiveRecord's initialize method
     self.cached = false
   end
 
-  def self.request_forecast!(address)
-    requester = Forecast::Requester.new(address)
-    raise StandardError unless requester.valid_response?
+  def request_forecast!
+    requester = Forecast::Requester.new(self.address)
+    raise Forecast::Requester::RequestInvalidError unless requester.valid_response?
 
-    Forecast.new(address: address, data: requester.parsed_response)
+    self.data = JSON.parse requester.response.body
   end
 
   def expiry_date = self.updated_at + EXPIRATION
@@ -47,32 +48,8 @@ class Forecast < ApplicationRecord
 
   def self.generate_address_hash(address) = Digest::MD5.hexdigest(address)
 
-  def self.find_fresh_by(address:)
-    # internally use address_hash for faster lookup
-    address_hash = Forecast.generate_address_hash(address)
-    forecast = Forecast.find_by(address_hash: address_hash)
-
-    return nil unless forecast
-    return forecast unless forecast.expired?
-
-    forecast.destroy!
-    nil
-  end
-
-  def self.fetch_or_find_by(address: , persist: false)
-    address_hash = Forecast.generate_address_hash(address)
-    forecast = Forecast.find_by(address_hash: address_hash)
-
-    return forecast unless forecast&.expired?
-    forecast ||= Forecast.new(address: address)
-
-    forecast_response = request_forecast!
-    forecast.update!(data: forecast_response.data)
-    forecast
-  end
-
-  def data
-    @data ||= ForecastDataSerializer.new(super)
+  def serialized_data
+    ForecastDataSerializer.new(data)
   end
 
   private

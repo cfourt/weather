@@ -3,7 +3,10 @@ require "net/http"
 require "json"
 require "uri"
 
+
 class Forecast::Requester
+  class RequestInvalidError < RuntimeError; end
+
   BASE_URI = "https://api.weatherapi.com/v1"
   API_KEY = ENV["API_KEY"] || "eb215054a2364e638d5202918241510"
 
@@ -24,7 +27,7 @@ class Forecast::Requester
   def serialized_response
     return { error: @response.message } unless valid_response?
 
-    ForecastDataSerializer.new(@response.data)
+    ForecastDataSerializer.new(@response.body)
   end
 
   def valid_response?

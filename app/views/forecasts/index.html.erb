@@ -18,16 +18,13 @@
   <h2 class="mt-5">Previous requests</h2>
   <div id="forecasts">
     <% @forecasts.each do |forecast| %>
-      <div class="card">
-        <div class="card-body">
-          <%= content_tag :h5, forecast.address %>
-          <div class="card-text">
-            <%#= content_tag :code, forecast.address_hash %>
-            <%= content_tag :pre, forecast.data %>
-            <%= link_to "View", forecast, class: 'btn btn-primary btn-sm' %>
+      <%= link_to forecast do %>
+        <div class="card">
+          <div class="card-body">
+            <%= content_tag :h5, "#{forecast.address} - #{time_ago_in_words(forecast.updated_at)} ago" %>
           </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 <% end %>
