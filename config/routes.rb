@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+
   resources :forecasts, only: [:index, :create, :show]
-  # get "start" => "forecasts#start"
-  # post "query" => "forecasts#query"
+
+  Rails.application.routes.draw do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

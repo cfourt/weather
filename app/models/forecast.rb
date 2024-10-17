@@ -19,7 +19,10 @@ class Forecast < ApplicationRecord
 
   validate :validate_address
 
-  before_save :add_address_hash # requires :data to be there
+  # TODO - save zip via another API
+  # before_save :add_address_hash # requires :data to be there
+
+  after_update_commit { broadcast_update }
 
   attr_accessor :cached
 
@@ -38,15 +41,15 @@ class Forecast < ApplicationRecord
     self.data = JSON.parse(requester.response.body)
   end
 
+  def request_forecast_async = ForecastRequesterJob.perform_later(self.id)
+
   def expiry_date = self.updated_at + EXPIRATION
 
   def expired? = Time.current >= (self.updated_at + EXPIRATION)
 
   def cached? = self.cached
 
-  def serialized_data
-    ForecastDataSerializer.new(data)
-  end
+  def serialized_data = ForecastDataSerializer.new(data)
 
   def add_address_hash
     self.address_hash = Digest::MD5.hexdigest(generate_address_hash)

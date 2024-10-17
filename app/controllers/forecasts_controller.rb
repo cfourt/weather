@@ -5,7 +5,7 @@ class ForecastsController < ApplicationController
     @forecast = Forecast.find(params[:id])
     return @forecast unless @forecast.expired?
 
-    @forecast.request_forecast!
+    @forecast.request_forecast_async
     @forecast.reload
   end
 
@@ -18,7 +18,7 @@ class ForecastsController < ApplicationController
 
     # render forecast if we have it saved already
     if @forecast.present?
-      flash[:info] = "Retrieving a cached forecast"
+      retrieve_or_indicate_cache_is_valid
       redirect_to @forecast and return
     end
 
@@ -29,10 +29,9 @@ class ForecastsController < ApplicationController
       return render :index
     end
 
-    @forecast.request_forecast!
-
     respond_to do |format|
       if @forecast.save
+        @forecast.request_forecast_async # requires ID
         format.html { redirect_to @forecast }
         format.json { render :show, status: :ok, location: @forecast }
       else
@@ -44,6 +43,12 @@ class ForecastsController < ApplicationController
   end
 
   private
+
+  def retrieve_or_indicate_cache_is_valid
+    return @forecast.request_forecast_async if @forecast.expired?
+
+    flash[:info] = "Retrieving a cached forecast"
+  end
 
   # Only allow a list of trusted parameters through.
   def forecast_params

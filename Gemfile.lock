@@ -139,10 +139,6 @@ GEM
       activesupport (>= 5.0.0)
     json (2.7.2)
     jsonapi-renderer (0.2.2)
-    kredis (1.7.0)
-      activemodel (>= 6.0.0)
-      activesupport (>= 6.0.0)
-      redis (>= 4.2, < 6)
     language_server-protocol (3.17.0.3)
     logger (1.6.1)
     loofah (2.22.0)
@@ -279,6 +275,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sidekiq (7.3.2)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      logger
+      rack (>= 2.2.4)
+      redis-client (>= 0.22.2)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -332,13 +334,13 @@ DEPENDENCIES
   httparty
   importmap-rails
   jbuilder
-  kredis
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.2.1)
-  redis (>= 4.0.1)
+  redis (~> 5.3)
   rubocop-rails-omakase
   selenium-webdriver
+  sidekiq
   sprockets-rails
   stimulus-rails
   turbo-rails

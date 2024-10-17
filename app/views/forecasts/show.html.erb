@@ -10,5 +10,9 @@
   <%= link_to "← Back to Home", root_path %>
 </div>
 
-<% content_for :title, @forecast.address %>
-<%= render @forecast %>
+<% content_for :title, "Forecast for: #{@forecast.address}" %>
+
+<%= turbo_stream_from @forecast %>
+<div id="<%= dom_id(@forecast) %>">
+  <%= render @forecast %>
+</div>
