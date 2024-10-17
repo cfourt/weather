@@ -21,8 +21,7 @@ class Forecast < ApplicationRecord
   validates :address_hash, presence: true, uniqueness: true
   validates :data, presence: true, uniqueness: true
 
-  after_initialize :add_address_hash
-  after_initialize :add_expiry_date
+  before_save :add_address_hash
 
   attr_accessor :cached
 
@@ -46,7 +45,12 @@ class Forecast < ApplicationRecord
 
   def cached? = self.cached
 
-  def self.generate_address_hash(address) = Digest::MD5.hexdigest(address)
+  # generates an approximation of zip code
+  def generate_address_hash
+    data = self.serialized_data
+    string = data.location.name + data.location.region + data.location.country
+    Digest::MD5.hexdigest(string)
+  end
 
   def serialized_data
     ForecastDataSerializer.new(data)
@@ -55,7 +59,7 @@ class Forecast < ApplicationRecord
   private
 
   def add_address_hash
-    self.address_hash = Digest::MD5.hexdigest(address)
+    self.address_hash = Digest::MD5.hexdigest(generate_address_hash)
   end
 
   def add_expiry_date
