@@ -4,17 +4,14 @@
   <%= forecast.address %>
 
   <% unless forecast.expired? %>
-      <span class="badge bg-secondary fs-6 align-middle ms-3">
+      <span class="badge bg-light text-dark fs-6 align-middle ms-3">
         Cached – Next refresh in
         <%= distance_of_time_in_words(forecast.expiry_date, Time.current) %>
       </span>
   <% end %>
 </h1>
 
-<%#= link_to 'Refresh Forecast', forecast_path(forecast), data: { turbo_frame: "forecast_#{forecast.id}" } %>
-
 <div>
-  <h2>Forecast Data:</h2>
   <% if forecast.data.present? %>
     <%= render 'forecast_data', forecast: forecast %>
   <% else %>

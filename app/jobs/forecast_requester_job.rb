@@ -1,4 +1,4 @@
-class ForecastRequ' esterJob < ApplicationJob
+class ForecastRequesterJob < ApplicationJob
 
   queue_as :default
 
