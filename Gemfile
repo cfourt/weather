@@ -32,6 +32,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem 'httparty'
 gem 'geocoder'
 gem 'dotenv-rails'
+gem 'active_model_serializers'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

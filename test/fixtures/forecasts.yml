@@ -19,12 +19,12 @@ one:
   address: 123 Main Street
 #  Don't set address_hash, it is generated on init
 #  address_hash: MyString
-  data: MyString
+  data: Hash.new({})
   expires_at: 2024-10-15 11:32:37
 
 two:
   address: 345 Second Street
 #  Don't set address_hash, it is generated on init
 #  address_hash: MyString
-  data: MyString
+  data: Hash.new({})
   expires_at: 2024-10-15 11:32:37

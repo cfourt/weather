@@ -21,12 +21,10 @@ class Forecast::Requester
     @response = Net::HTTP.get_response(uri)
   end
 
-  def parsed_response
-    if valid_response?
-      JSON.parse(@response.body)
-    else
-      { error: @response.message }
-    end
+  def serialized_response
+    return { error: @response.message } unless valid_response?
+
+    ForecastDataSerializer.new(@response.data)
   end
 
   def valid_response?

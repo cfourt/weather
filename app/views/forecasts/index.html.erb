@@ -22,7 +22,7 @@
         <div class="card-body">
           <%= content_tag :h5, forecast.address %>
           <div class="card-text">
-            <%= content_tag :code, forecast.address_hash %>
+            <%#= content_tag :code, forecast.address_hash %>
             <%= content_tag :pre, forecast.data %>
             <%= link_to "View", forecast, class: 'btn btn-primary btn-sm' %>
           </div>

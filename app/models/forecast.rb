@@ -15,7 +15,6 @@
 #  index_forecasts_on_address_hash  (address_hash)
 #
 class Forecast < ApplicationRecord
-  require 'ostruct'
   EXPIRATION = 30.minutes
 
   validates :address_hash, presence: true, uniqueness: true
@@ -24,7 +23,9 @@ class Forecast < ApplicationRecord
   after_initialize :add_address_hash
   after_initialize :add_expiry_date
 
-  attr_accessor :cached
+  attr_accessor :cached, :data
+
+  default_scope { where(updated_at > EXPIRATION.ago) }
 
   def initialize(attributes = {})
     super(attributes) # Pass attributes to ActiveRecord's initialize method
@@ -38,7 +39,9 @@ class Forecast < ApplicationRecord
     Forecast.new(address: address, data: requester.parsed_response)
   end
 
-  def expired? = Time.current >= self.expires_at
+  def expiry_date = self.updated_at + EXPIRATION
+
+  def expired? = Time.current >= (self.updated_at + EXPIRATION)
 
   def cached? = self.cached
 
@@ -48,13 +51,28 @@ class Forecast < ApplicationRecord
     # internally use address_hash for faster lookup
     address_hash = Forecast.generate_address_hash(address)
     forecast = Forecast.find_by(address_hash: address_hash)
-    return forecast unless forecast && forecast.expired?
+
+    return nil unless forecast
+    return forecast unless forecast.expired?
+
+    forecast.destroy!
     nil
   end
 
-  # prefer . access instead of .dig or [][]
+  def self.fetch_or_find_by(address: , persist: false)
+    address_hash = Forecast.generate_address_hash(address)
+    forecast = Forecast.find_by(address_hash: address_hash)
+
+    return forecast unless forecast&.expired?
+    forecast ||= Forecast.new(address: address)
+
+    forecast_response = request_forecast!
+    forecast.update!(data: forecast_response.data)
+    forecast
+  end
+
   def data
-    OpenStruct.new(super)
+    @data ||= ForecastDataSerializer.new(super)
   end
 
   private

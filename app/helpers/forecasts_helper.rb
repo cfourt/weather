@@ -15,7 +15,7 @@ module ForecastsHelper
   def location_data_list(data)
     data.map do |key, value|
       next unless location_keys_to_display.include?(key)
-      content_tag(:dt, location_labelize(key), class: "fs-4") + content_tag(:dd, value, class: "fs-4")
+      content_tag(:dt, location_labelize(key)) + content_tag(:dd, value)
     end.join().html_safe
   end
 
@@ -43,15 +43,16 @@ module ForecastsHelper
   end
 
   def location_labelize(key)
-    case key
-    when /lat/; "Latitude"
-    when /lon/; "Longitude"
-    when /name/; "Location"
-    when /tz_id/; "Timezone"
-    when /region/; "Region"
-    when /country/; "Country"
-    when /localtime/; "Local time"
-    end
+    str = case key
+          when /lat/; "Latitude"
+          when /lon/; "Longitude"
+          when /name/; "Location"
+          when /tz_id/; "Timezone"
+          when /region/; "Region"
+          when /country/; "Country"
+          when /localtime/; "Local time"
+          end
+    str + ":"
   end
 
   def forecast_labelize(key)

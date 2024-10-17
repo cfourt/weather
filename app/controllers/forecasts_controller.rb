@@ -1,12 +1,17 @@
 class ForecastsController < ApplicationController
-  before_action :set_forecast, only: %i[ show ]
+  # before_action :set_forecast, only: %i[ show ]
 
   # GET /forecasts/1 or /forecasts/1.json
   def show
+    @forecast = Forecast.find(params[:id])
+    return @forecast unless @forecast.expired?
+
+    Forecast.request_forecast!(@forecast.address).save
   end
 
   def index
-    @forecasts = Forecast.all # TODO sort and limit
+    # double check these are still valid!
+    @forecasts = Forecast.all.order(created_at: :desc).limit(25)
   end
 
   def create

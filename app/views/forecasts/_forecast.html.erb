@@ -1,41 +1,63 @@
 <div id="<%= dom_id forecast %>">
   <h1>
-    Weather for:
+    <strong class="fs-6 text-muted">Weather for</strong>
     <br>
-    <u><%= forecast.address %></u>
-    <%= image_tag(
-          forecast.data.current.dig('condition', 'icon'),
-          alt: forecast.data.current.dig('condition', 'text')
-        ) %>
-  </h1>
-  <br>
-  <div class="border border-2 rounded p-4">
-    <dl>
-      <%= location_data_list(forecast.data.location) %>
-    </dl>
-  </div>
+    <%= forecast.address %>
 
-  <div class="border border-2 rounded mt-5 p-4">
-    <h2 class="fs-4 mb-5">
-      Current Weather
-
-      <span class="badge bg-secondary fs-6">
-        <% unless forecast.expired? %>
+    <span class="badge bg-secondary fs-6 align-middle ms-3">
+      <% unless forecast.expired? %>
           Cached – Next refresh in
-          <%= distance_of_time_in_words(forecast.expires_at, Time.current) %>
+        <%= distance_of_time_in_words(forecast.expires_at, Time.current) %>
         <% else %>
         Expired
       <% end %>
-      </span>
-    </h2>
+  </span>
+  </h1>
 
-    <%= current_forecast_data_list(forecast.data.current) %>
+
+  <div class="lead">
+    <%= forecast.data.name %>, <%= forecast.data.region %>, <%= forecast.data.country %>
+    <p class="font-monospace fs-6"><%= forecast.data.latitude %>,<%= forecast.data.longitude %></p>
   </div>
 
-</div>
+  <div class="border border-2 rounded mt-5 p-4">
 
-<hr class="mt-5 mb-5">
-<details>
-  <summary>Raw Data</summary>
-  <%= data_list(forecast.data.current) %>
-</details>
+    <div class="row align-items-start">
+      <div class="col">
+        <div class="row">
+          <div class="col-lg-6">
+            <%= content_tag :h1, "#{forecast.data.temp_f}°", class: 'display-1' %>
+          </div>
+
+          <div class="col col-lg-6">
+            <%= content_tag :span, forecast.data.condition['text'], class: 'display-6 align-middle' %>
+            <%= image_tag(
+                  forecast.data.condition['icon'],
+                  alt: forecast.data.condition['text']
+                ) %>
+          </div>
+        </div>
+      </div>
+      <div class="col my-auto mx-auto">
+        <%= content_tag :p do %>
+          <strong>🌧 Precipitation:</strong> <%= "#{forecast.data.precip_in} in" %>
+        <% end %>
+        <%= content_tag :p do %>
+          <strong>💧Humidity:</strong> <%= "#{forecast.data.humidity}" %>
+        <% end %>
+        <%= content_tag :p do %>
+          <strong>🌬️ Wind:</strong> <%= "#{forecast.data.wind_mph} mph #{forecast.data.wind_dir}" %>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
+
+  <details class="my-5">
+    <summary>Raw Data</summary>
+    <code>
+      <%= forecast.data.current %>''
+    </code>
+  </details>
+</div>
