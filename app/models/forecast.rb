@@ -18,14 +18,15 @@ class Forecast < ApplicationRecord
   EXPIRATION = 30.minutes
 
   validates_with AddressValidator
-  validates :address_hash, presence: true, uniqueness: true
+  # validates :address_hash, presence: true, uniqueness: true
   validates :data, presence: true, uniqueness: true
 
-  before_save :add_address_hash
+  before_save :add_address_hash # requires :data to be there
 
   attr_accessor :cached
 
-  scope :not_expired, -> { where('updated_at > ?', EXPIRATION.ago) }
+  scope :not_expired, -> { where("updated_at > ?", EXPIRATION.ago) }
+  scope :index_list, -> { not_expired.order(created_at: :desc).limit(25) }
 
   def initialize(attributes = {})
     super(attributes) # Pass attributes to ActiveRecord's initialize method
@@ -36,7 +37,7 @@ class Forecast < ApplicationRecord
     requester = Forecast::Requester.new(self.address)
     raise Forecast::Requester::RequestInvalidError unless requester.valid_response?
 
-    self.data = JSON.parse requester.response.body
+    self.data = JSON.parse(requester.response.body)
   end
 
   def expiry_date = self.updated_at + EXPIRATION
@@ -45,21 +46,22 @@ class Forecast < ApplicationRecord
 
   def cached? = self.cached
 
-  # generates an approximation of zip code
-  def generate_address_hash
-    data = self.serialized_data
-    string = data.location.name + data.location.region + data.location.country
-    Digest::MD5.hexdigest(string)
-  end
-
   def serialized_data
     ForecastDataSerializer.new(data)
   end
 
-  private
-
   def add_address_hash
     self.address_hash = Digest::MD5.hexdigest(generate_address_hash)
+  end
+
+  private
+
+  # generates an approximation of zip code
+  def generate_address_hash
+    string = self.serialized_data.name +
+      self.serialized_data.region +
+      self.serialized_data.country
+    Digest::MD5.hexdigest(string)
   end
 
   def add_expiry_date

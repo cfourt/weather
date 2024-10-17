@@ -7,7 +7,7 @@
     <span class="badge bg-secondary fs-6 align-middle ms-3">
       <% unless forecast.expired? %>
           Cached – Next refresh in
-        <%= distance_of_time_in_words(forecast.expires_at, Time.current) %>
+        <%= distance_of_time_in_words(forecast.expiry_date, Time.current) %>
         <% else %>
         Expired
       <% end %>

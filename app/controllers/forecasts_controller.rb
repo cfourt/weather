@@ -10,7 +10,7 @@ class ForecastsController < ApplicationController
   end
 
   def index
-    @forecasts = Forecast.all.not_expired.order(created_at: :desc).limit(25)
+    @forecasts = Forecast.index_list
   end
 
   def create
@@ -30,7 +30,8 @@ class ForecastsController < ApplicationController
         format.html { redirect_to @forecast }
         format.json { render :show, status: :ok, location: @forecast }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        @forecasts = Forecast.index_list
+        format.html { render :index, error: @forecast.errors.full_messages.to_sentence }
         format.json { render json: @forecast.errors, status: :unprocessable_entity }
       end
     end

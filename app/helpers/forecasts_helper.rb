@@ -1,33 +1,4 @@
 module ForecastsHelper
-  def data_list(data)
-    data.map do |key, value|
-      content_tag(:dt, key) + content_tag(:dd, value)
-    end.join().html_safe
-  end
-
-  def current_forecast_data_list(data)
-    data.map do |key, value|
-      next unless current_forecast_keys_to_display.include?(key)
-      content_tag(:dt, "#{icon_map(key)} #{forecast_labelize(key)}", class: "fs-2") + content_tag(:dd, value, class: "fs-2")
-    end.join().html_safe
-  end
-
-  def location_data_list(data)
-    data.map do |key, value|
-      next unless location_keys_to_display.include?(key)
-      content_tag(:dt, location_labelize(key)) + content_tag(:dd, value)
-    end.join().html_safe
-  end
-
-  def location_keys_to_display
-    Forecast::Payload::LOCATION_KEYS - ["localtime_epoch"]
-  end
-
-  def current_forecast_keys_to_display
-    Forecast::Payload::CURRENT_KEYS -
-      %w[condition is_day temp_c gust_kph wind_kph precip_mm dewpoint_c feelslike_c heatindex_c pressure_mb windchill_c last_updated_epoch last_updated]
-  end
-
   def icon_map(key)
     case key
     when /uv/; "☀️"
