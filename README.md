@@ -22,6 +22,7 @@ After loadinag the app, an inputing an address or zipcode
 -under construction-
 
 **TODO**
+- rename form param: address -> query
 - adjust adjust lookup by zip, if not found then generate new one by address
 - Fix turbo stream refresh (not refreshing)
 - Tests aren't complete: Add tests for forecast_serializer, forecast_requester

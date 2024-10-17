@@ -12,7 +12,7 @@ class ForecastsController < ApplicationController
   end
 
   def create
-    @forecast = Forecast.find_by(address: params[:address])
+    @forecast = find_by_address_or_zip
 
     # render forecast if we have it saved already
     if @forecast.present?
@@ -46,6 +46,16 @@ class ForecastsController < ApplicationController
     return @forecast.request_forecast_async if @forecast.expired?
 
     flash[:info] = "Retrieving a cached forecast"
+  end
+
+  def find_by_address_or_zip
+    return Forecast.find_by(zipcode: params[:address]) if param_is_zipcode?
+
+     Forecast.find_by(address: params[:address])
+  end
+
+  def param_is_zipcode?
+    params[:address].match? /\d{5}/
   end
 
   # Only allow a list of trusted parameters through.

@@ -1,5 +1,6 @@
 <div class="lead">
-  <%= forecast.serialized_data.name %>, <%= forecast.serialized_data.region %>, <%= forecast.serialized_data.country %>
+  <%= forecast.serialized_data.name %>, <%= forecast.serialized_data.region %> <%= forecast.zipcode %>
+  <p><%= forecast.serialized_data.country %></p>
   <p class="font-monospace fs-6"><%= forecast.serialized_data.latitude %>,<%= forecast.serialized_data.longitude %></p>
 </div>
 

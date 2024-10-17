@@ -28,8 +28,11 @@ class Forecast::GeocodeRequester
     request = Net::HTTP::Get.new(uri)
     @response = http.request(request)
   end
+
   def parse_for_zipcode
-    serialized_response.zipcode
+    zip = serialized_response.zipcode
+    # return only the first 5 of the zip-code, note: limited to USA!
+    zip.match /\d{5}/
   end
 
   def serialized_response

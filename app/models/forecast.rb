@@ -27,7 +27,7 @@ class Forecast < ApplicationRecord
   before_save :request_zipcode_async, if: :will_save_change_to_data?
 
   def initialize(attributes = {})
-    super(attributes) # Pass attributes to ActiveRecord's initialize method
+    super(attributes)
     self.cached = false
   end
 
@@ -40,7 +40,6 @@ class Forecast < ApplicationRecord
 
   def request_zipcode!
     requester = Forecast::GeocodeRequester.new(self.address)
-    binding.b
     raise Forecast::GeocodeRequester::RequestInvalidError unless requester.valid_response?
 
     self.zipcode = requester.parse_for_zipcode
