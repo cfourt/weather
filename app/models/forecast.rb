@@ -22,7 +22,7 @@ class Forecast < ApplicationRecord
   # TODO - save zip via another API
   # before_save :add_address_hash # requires :data to be there
 
-  after_update_commit { broadcast_update }
+  after_update_commit { broadcast_update_to "forecast" }
 
   attr_accessor :cached
 

@@ -12,7 +12,7 @@
 
 <% content_for :title, "Forecast for: #{@forecast.address}" %>
 
-<%= turbo_stream_from @forecast %>
-<div id="<%= dom_id(@forecast) %>">
+<%= turbo_stream_from "forecast" %>
+<div id="forecast">
   <%= render @forecast %>
 </div>
