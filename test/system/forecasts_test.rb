@@ -15,9 +15,8 @@ class ForecastsTest < ApplicationSystemTestCase
     click_on "New forecast"
 
     fill_in "Address", with: @forecast.address
-    fill_in "Address hash", with: @forecast.address_hash
+    fill_in "Zipcode", with: @forecast.zipcode
     fill_in "Data", with: @forecast.data
-    fill_in "Expires at", with: @forecast.expires_at
     click_on "Create Forecast"
 
     assert_text "Forecast was successfully created"
@@ -29,9 +28,8 @@ class ForecastsTest < ApplicationSystemTestCase
     click_on "Edit this forecast", match: :first
 
     fill_in "Address", with: @forecast.address
-    fill_in "Address hash", with: @forecast.address_hash
+    fill_in "Zipcode", with: @forecast.zipcode
     fill_in "Data", with: @forecast.data
-    fill_in "Expires at", with: @forecast.expires_at.to_s
     click_on "Update Forecast"
 
     assert_text "Forecast was successfully updated"

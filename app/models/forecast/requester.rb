@@ -13,10 +13,10 @@ class Forecast::Requester
 
   def initialize(address)
     @address = address
-    get_current_forecast_by_address
+    get_current_forecast_by_address!
   end
 
-  def get_current_forecast_by_address
+  def get_current_forecast_by_address!
     uri = URI("#{BASE_URI}/current.json")
     params = { q: @address, key: API_KEY }
     uri.query = URI.encode_www_form(params)

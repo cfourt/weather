@@ -16,11 +16,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_15_183237) do
 
   create_table "forecasts", force: :cascade do |t|
     t.string "address"
-    t.string "address_hash"
+    t.string "zipcode"
     t.jsonb "data"
-    t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["address_hash"], name: "index_forecasts_on_address_hash"
+    t.index ["zipcode"], name: "index_forecasts_on_zipcode"
   end
 end

@@ -3,9 +3,7 @@ class ForecastsController < ApplicationController
   # GET /forecasts/1 or /forecasts/1.json
   def show
     @forecast = Forecast.find(params[:id])
-    return @forecast unless @forecast.expired?
-
-    @forecast.request_forecast_async
+    retrieve_or_indicate_cache_is_valid
     @forecast.reload
   end
 

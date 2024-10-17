@@ -49,8 +49,7 @@
 class ForecastDataSerializer < ActiveModel::Serializer
   LOCATION_KEYS = %w[lat lon name tz_id region country localtime localtime_epoch]
   CURRENT_KEYS = %w[uv cloud is_day temp_c temp_f vis_km gust_kph gust_mph humidity wind_dir wind_kph wind_mph condition precip_in precip_mm vis_miles dewpoint_c dewpoint_f feelslike_c feelslike_f heatindex_c heatindex_f pressure_in pressure_mb wind_degree windchill_c windchill_f last_updated last_updated_epoch]
-  attributes(LOCATION_KEYS + CURRENT_KEYS)
-  # attributes(%i(LOCATION_KEYS + CURRENT_KEYS))
+  attributes(LOCATION_KEYS + CURRENT_KEYS) # TODO pull this out
 
   def location = object["location"]
 

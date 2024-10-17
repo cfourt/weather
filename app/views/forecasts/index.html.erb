@@ -5,16 +5,16 @@
   <h1>Hail Yeah 🌨️</h1>
   <div data-turbo="false">
     <%= form_with url: forecasts_path do |f| %>
-      <%= f.label :address, "Enter an Address to see your forecast", class: 'fw-bold mt-5' %>
+      <%= f.label :address, "Enter an Address to see your forecast", class: 'fs-6 fw-bold mt-5 mb-2' %>
       <br>
-      <%= f.text_field :address %>
+      <%= f.text_field :address, style: "font-size: 1.5em; width: 50%" %>
     <% end %>
   </div>
 </div>
 
 
 <% if @forecasts&.any? %>
-  <h2 class="mt-5">Previous requests</h2>
+  <h2 class="mt-5 fs-5">Previous requests</h2>
   <div id="forecasts">
     <% @forecasts.each do |forecast| %>
       <%= link_to forecast, class: "text-decoration-none", data: {turbo: false} do %>

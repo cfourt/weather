@@ -2,32 +2,29 @@
 #
 # Table name: forecasts
 #
-#  id           :bigint           not null, primary key
-#  address      :string
-#  address_hash :string
-#  data         :jsonb
-#  expires_at   :datetime
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id         :bigint           not null, primary key
+#  address    :string
+#  data       :jsonb
+#  zipcode    :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 # Indexes
 #
-#  index_forecasts_on_address_hash  (address_hash)
+#  index_forecasts_on_zipcode  (zipcode)
 #
 class Forecast < ApplicationRecord
-  EXPIRATION = 30.minutes
-
-  validate :validate_address
-
-  # TODO - save zip via another API
-  # before_save :add_address_hash # requires :data to be there
-
-  after_update_commit { broadcast_update_to "forecast" }
+  EXPIRATION = 30.minutes.freeze
 
   attr_accessor :cached
 
   scope :not_expired, -> { where("updated_at > ?", EXPIRATION.ago) }
   scope :index_list, -> { not_expired.order(created_at: :desc).limit(25) }
+
+  validate :validate_address
+
+  after_update_commit { broadcast_update_to "forecast" }
+  before_save :request_zipcode_async, if: :will_save_change_to_data?
 
   def initialize(attributes = {})
     super(attributes) # Pass attributes to ActiveRecord's initialize method
@@ -41,7 +38,17 @@ class Forecast < ApplicationRecord
     self.data = JSON.parse(requester.response.body)
   end
 
-  def request_forecast_async = ForecastRequesterJob.perform_later(self.id)
+  def request_zipcode!
+    requester = Forecast::GeocodeRequester.new(self.address)
+    binding.b
+    raise Forecast::GeocodeRequester::RequestInvalidError unless requester.valid_response?
+
+    self.zipcode = requester.parse_for_zipcode
+  end
+
+  def request_forecast_async = ForecastRequesterJob.perform_now(self.id)
+
+  def request_zipcode_async = GeocodeRequesterJob.perform_now(self.id)
 
   def expiry_date = self.updated_at + EXPIRATION
 
@@ -51,23 +58,7 @@ class Forecast < ApplicationRecord
 
   def serialized_data = ForecastDataSerializer.new(data)
 
-  def add_address_hash
-    self.address_hash = Digest::MD5.hexdigest(generate_address_hash)
-  end
-
   private
-
-  # generates an approximation of zip code
-  def generate_address_hash
-    string = self.serialized_data.name +
-      self.serialized_data.region +
-      self.serialized_data.country
-    Digest::MD5.hexdigest(string)
-  end
-
-  def add_expiry_date
-    self.expires_at ||= EXPIRATION.from_now
-  end
 
   def validate_address
     return if address.match?(/\A[A-Za-z0-9'\.\-\s,]+\z/)

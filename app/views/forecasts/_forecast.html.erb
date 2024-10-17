@@ -15,6 +15,11 @@
   <% if forecast.data.present? %>
     <%= render 'forecast_data', forecast: forecast %>
   <% else %>
-    <p>No forecast data available yet...</p>
+    <p>No forecast data available yet...refreshing</p>
+    <script>
+      setTimeout(function() {
+        window.location.reload();
+      }, 1000);
+    </script>
   <% end %>
 </div>
