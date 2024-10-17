@@ -17,9 +17,7 @@
 class Forecast < ApplicationRecord
   EXPIRATION = 30.minutes
 
-  validates_with AddressValidator
-  # validates :address_hash, presence: true, uniqueness: true
-  validates :data, presence: true, uniqueness: true
+  validate :validate_address
 
   before_save :add_address_hash # requires :data to be there
 
@@ -66,6 +64,12 @@ class Forecast < ApplicationRecord
 
   def add_expiry_date
     self.expires_at ||= EXPIRATION.from_now
+  end
+
+  def validate_address
+    return if address.match?(/\A[A-Za-z0-9'\.\-\s,]+\z/)
+
+    self.errors.add(:address, "Must be a valid address which cannot contain any symbols")
   end
 
 end

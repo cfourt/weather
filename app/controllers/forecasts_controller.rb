@@ -23,6 +23,12 @@ class ForecastsController < ApplicationController
     end
 
     @forecast = Forecast.new(address: params[:address])
+
+    unless @forecast.valid?
+      flash.now[:error] = @forecast.errors.full_messages.to_sentence
+      return render :index
+    end
+
     @forecast.request_forecast!
 
     respond_to do |format|

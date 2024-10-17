@@ -8,13 +8,12 @@
       <%= f.label :address, "Enter an Address to see your forecast", class: 'fw-bold mt-5' %>
       <br>
       <%= f.text_field :address %>
-      <%#= f.submit "Get Forecast", class: 'btn btn-primary btn-sm' %>
     <% end %>
   </div>
 </div>
 
 
-<% if @forecasts.any? %>
+<% if @forecasts&.any? %>
   <h2 class="mt-5">Previous requests</h2>
   <div id="forecasts">
     <% @forecasts.each do |forecast| %>
