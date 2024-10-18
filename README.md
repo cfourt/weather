@@ -1,7 +1,7 @@
 Weather App
 =======
 
-Weather (a.k.a. "Hail Yeah!") is a tiny weather app designed to fetch and display weather via street address.
+Weather (Internally pun-named "Hail Yeah!") is a tiny weather app designed to fetch and display weather via street address.
 Weather info is cached for a maximum of 30 minutes
 
 ## Overview of Forecast lifecycle

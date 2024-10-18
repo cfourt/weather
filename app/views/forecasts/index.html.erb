@@ -2,7 +2,7 @@
 <p style="color: red"><%= flash[:error] %></p>
 
 <div class="text-center mt-5">
-  <h1>Hail Yeah 🌨️</h1>
+  <h1>What's the Weather?</h1>
   <div data-turbo="false">
     <%= form_with url: forecasts_path do |f| %>
       <%= f.label :address, "Enter an Address to see your forecast", class: 'fs-6 fw-bold mt-5 mb-2' %>
