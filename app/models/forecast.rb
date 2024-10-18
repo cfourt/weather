@@ -2,17 +2,24 @@
 #
 # Table name: forecasts
 #
-#  id         :bigint           not null, primary key
-#  address    :string
-#  data       :jsonb
-#  zipcode    :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id            :bigint           not null, primary key
+#  address       :string
+#  data          :jsonb
+#  forecast_data :jsonb
+#  zipcode       :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 # Indexes
 #
 #  index_forecasts_on_zipcode  (zipcode)
 #
+
+# Forecast
+# The primary class for fetching weather/forecast information
+# .forecast_data is used for storing upcoming weather, while .data is used for storing the current weather and location information
+# TODO - Refactor current weather and location information into different fields for more clear and scalable access
+
 class Forecast < ApplicationRecord
   EXPIRATION = 30.minutes.freeze
 
@@ -31,14 +38,15 @@ class Forecast < ApplicationRecord
     self.cached = false
   end
 
-  def request_forecast!
+  def request_and_assign_forecast_data!
     requester = Forecast::Requester.new(self.address)
-    raise Forecast::Requester::RequestInvalidError unless requester.valid_response?
+    self.data = requester.get_current_weather_by_address!
 
-    self.data = JSON.parse(requester.response.body)
+    requester.get_forecast_by_address!
+    self.forecast_data = requester.get_forecast_by_address!
   end
 
-  def request_zipcode!
+  def request_and_assign_zipcode!
     requester = Forecast::GeocodeRequester.new(self.address)
     raise Forecast::GeocodeRequester::RequestInvalidError unless requester.valid_response?
 
@@ -55,7 +63,10 @@ class Forecast < ApplicationRecord
 
   def cached? = self.cached
 
-  def serialized_data = ForecastDataSerializer.new(data)
+  def serialized_current_weather_data = ForecastDataSerializer.new(data)
+
+  # TODO
+  # def serialized_forecast_data = ForecastDataSerializer.new(forecast_data)
 
   private
 

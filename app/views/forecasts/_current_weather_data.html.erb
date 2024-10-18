@@ -1,0 +1,18 @@
+<%# TODO - prepare this in the controller for cleaner access  %>
+<% three_day_forecast = forecast.forecast_data.dig("forecast", "forecastday") %>
+<h2 class="text-muted">3 Day Weather Forecast</h2>
+
+<div class="row">
+  <% three_day_forecast.each do |daily_forecast| %>
+    <div class="col border border-2 rounded p-4 mx-2">
+      <%= content_tag :h3, daily_forecast["date"], class: "fs-5" %>
+      <% day = daily_forecast["day"] %>
+      <%= content_tag :h4, "#{day["avgtemp_f"]}°", class: 'display-4' %>
+      <p>
+        <strong>High: </strong> <%= "#{day["maxtemp_f"]}°" %>
+        <strong>Low: </strong> <%= "#{day["mintemp_f"]}°" %>
+      </p>
+
+    </div>
+  <% end %>
+</div>

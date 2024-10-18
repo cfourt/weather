@@ -24,4 +24,8 @@ class ForecastsControllerTest < ActionDispatch::IntegrationTest
     get forecast_url(@forecast)
     assert_response :success
   end
+
+  test "should return a zip cache hit early" do
+    skip
+  end
 end

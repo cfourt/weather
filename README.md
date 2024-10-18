@@ -74,12 +74,13 @@ There is a lot left to do to make this project viable. Here are the ones I'm imm
 - Pull API keys out of repo, update and rotate
 - rename form param: address -> query
 - Fix turbo stream refresh (not refreshing)
+- Add serializer for serialized_current_weather_data and nicer access for forecast data
 - Single API usage
   - On initial investigation, I was unable to find an API that could provide both forecast lookup by address AND return location information that included postal codes
   - TODO is to find a single API to ensure forecast information, address, and zipcode all match
     - The use of two API **will** result in data inconsistency, invalidating the use of the cache
 - Tests aren't complete:
-  - Fix broken tests in  
-  - Add tests for forecast_serializer, forecast_requester, zipcode_requester, zipcode_serializer
+  - Fix broken/skipped tests, particularly in requesters 
+  - Add tests for forecast_serializer, forecast_requester_job, zipcode_requester_job, zipcode_serializer
   - Improve coverage for controllers
   - Add system tests

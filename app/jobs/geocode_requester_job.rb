@@ -3,7 +3,7 @@ class GeocodeRequesterJob < ApplicationJob
 
   def perform(forecast_id)
     forecast = Forecast.find(forecast_id)
-    forecast.request_zipcode!
+    forecast.request_and_assign_zipcode!
     forecast.save
     puts "Fetched zip for #{forecast.id}"
   end

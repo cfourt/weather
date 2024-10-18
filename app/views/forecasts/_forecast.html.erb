@@ -2,25 +2,32 @@
   <strong class="fs-6 text-muted">Weather for</strong>
   <br>
   <%= forecast.address %>
-  <p class="font-monospace fs-6"><%= forecast.zipcode %></p>
 
   <% unless forecast.expired? %>
-      <span class="badge bg-light text-dark fs-6 align-middle ms-3">
+      <span class="badge bg-light text-dark fs-6 align-middle">
         Cached – Next refresh in
         <%= distance_of_time_in_words(forecast.expiry_date, Time.current) %>
       </span>
   <% end %>
 </h1>
 
-<div>
+<div id="current-weather">
   <% if forecast.data.present? %>
     <%= render 'forecast_data', forecast: forecast %>
   <% else %>
-    <p>No forecast data available yet...refreshing</p>
+    <p>No weather data available yet...refreshing</p>
     <script>
       setTimeout(function() {
         window.location.reload();
       }, 1000);
     </script>
+  <% end %>
+</div>
+
+<div id="forecast" class="mt-5">
+  <% if forecast.forecast_data.present? %>
+    <%= render 'current_weather_data', forecast: forecast %>
+  <% else %>
+    <p>No forecast data available yet...refreshing</p>
   <% end %>
 </div>

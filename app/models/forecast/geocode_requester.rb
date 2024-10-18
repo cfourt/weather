@@ -4,6 +4,18 @@ require "net/http"
 require "json"
 require "uri"
 
+# Use GeocodeRequester to interface with HERE API to receive location information.
+# It is primarily used for requesting a zip code (postal code).
+# Current refers to the current conditions at a location, while Forecast is the upcoming weather
+# Example usage:
+#   geo_requester = Forecast::GeocodeRequester.new(forecast.address)
+#   geo_requester.parse_for_zipcode => json_api_response
+#
+# # Note that on initialization, the request is sent. Refactor as appropriate if the expectations on GeocodeRequester change.
+#
+# For error checking, use #valid_response?
+# RequestInvalidError can be used for specific handling
+
 class Forecast::GeocodeRequester
   class RequestInvalidError < RuntimeError; end
 
@@ -31,7 +43,9 @@ class Forecast::GeocodeRequester
 
   def parse_for_zipcode
     zip = serialized_response.zipcode
-    # return only the first 5 of the zip-code, note: limited to USA!
+    return "" if zip.nil?
+
+    # return only the first 5 of the zip-code, note: only have tested within USA
     zip.match /\d{5}/
   end
 
