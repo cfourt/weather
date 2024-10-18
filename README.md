@@ -71,6 +71,7 @@ While testing is *clearly* incomplete, many tests have been stubbed and skipped 
 
 **TODO**
 There is a lot left to do to make this project viable. Here are the ones I'm immediately aware of:
+- Pull API keys out of repo, update and rotate
 - rename form param: address -> query
 - Fix turbo stream refresh (not refreshing)
 - Single API usage
@@ -78,6 +79,7 @@ There is a lot left to do to make this project viable. Here are the ones I'm imm
   - TODO is to find a single API to ensure forecast information, address, and zipcode all match
     - The use of two API **will** result in data inconsistency, invalidating the use of the cache
 - Tests aren't complete:
+  - Fix broken tests in  
   - Add tests for forecast_serializer, forecast_requester, zipcode_requester, zipcode_serializer
   - Improve coverage for controllers
   - Add system tests

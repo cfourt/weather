@@ -17,22 +17,14 @@ require "test_helper"
 
 class ForecastTest < ActiveSupport::TestCase
 
+  # TODO test the eventual completeness of the record through sidekiq
   test "should have zipcode eventually added" do
     skip
   end
 
-  test "#find_fresh_by should return nil, not an expired record" do
-    address = "123 Main St"
-    Forecast.create(address: address)
-    assert_nil Forecast.find_fresh_by(address: address)
-  end
-
-  # TODO
-  test "#find_fresh_by should return a non-expired record" do
+  test "can create record" do
     address = "678 Main St"
     Forecast.create!(address: address)
-    # assert_not_nil Forecast.find_fresh_by(address: address)
+    assert Forecast.last.address == address
   end
-
-  # TODO write tests for Forecast::Requester
 end

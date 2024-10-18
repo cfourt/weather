@@ -10,8 +10,8 @@ class ForecastsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should create forecast" do
-    assert_difference("Forecast.count") do
+  test "should not create forecast for existing record" do
+    assert_no_difference("Forecast.count") do
       post forecasts_url, params: { address: @forecast.address }
     end
 
@@ -20,7 +20,7 @@ class ForecastsControllerTest < ActionDispatch::IntegrationTest
 
   test "should show forecast" do
     skip
-    # test is failing because of `dig` in view, accessing a hash with a default value, returning nil
+    # need to update to use serializer
     get forecast_url(@forecast)
     assert_response :success
   end
