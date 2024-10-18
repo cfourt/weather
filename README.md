@@ -4,6 +4,9 @@ Weather App
 Weather (Internally pun-named "Hail Yeah!") is a tiny weather app designed to fetch and display weather via street address.
 Weather info is cached for a maximum of 30 minutes
 
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/c37ae78a-b2df-4b0a-9479-933b39cd775d">
+
+
 ## Overview of Forecast lifecycle
 After loading the app and inputting an address or zip code, it will return a forecast for the location specified.
 
