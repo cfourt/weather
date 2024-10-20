@@ -1,3 +1,5 @@
+# Used to fetch forecast information for a specified location
+
 class ForecastRequesterJob < ApplicationJob
 
   queue_as :default

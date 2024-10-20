@@ -1,3 +1,5 @@
+# Used to fetch zipcode/postal-code information on a particular address
+
 class GeocodeRequesterJob < ApplicationJob
   queue_as :default
 

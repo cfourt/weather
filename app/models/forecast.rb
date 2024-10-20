@@ -18,7 +18,14 @@
 # Forecast
 # The primary class for fetching weather/forecast information
 # .forecast_data is used for storing upcoming weather, while .data is used for storing the current weather and location information
-# TODO - Refactor current weather and location information into different fields for more clear and scalable access
+# "!" methods (e.g. request_and_assign_forecast_data!) trigger immediate requests, use async methods to schedule jobs and allow immediate returns
+#
+#
+# TODO
+# - Refactor current weather and location information into different fields for more clear and scalable access
+# - Remove cached virtual attribute, it is deprecated
+# - Consolidate forecast and current requests into one call
+# - Simply data storage to retain only required information (e.g. no need to retain pressure or other forecast data)
 
 class Forecast < ApplicationRecord
   EXPIRATION = 30.minutes.freeze
